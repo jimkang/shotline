@@ -1,0 +1,28 @@
+{
+  "name": "shotline",
+  "version": "1.0.0",
+  "description": "A queued service for taking snapshots of web pages that will only allow n shots to be taken at a time so as to not overwhelm your tiny VPS or Pi or what not.",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jimkang/shotline.git"
+  },
+  "keywords": [],
+  "author": "Jim Kang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jimkang/shotline/issues"
+  },
+  "homepage": "https://github.com/jimkang/shotline",
+  "devDependencies": {
+    "tape": "^3.0.3"
+  },
+  "dependencies": {
+    "idmaker": "^0.1.1",
+    "restify": "^4.0.3",
+    "webshot": "^0.18.0"
+  }
+}
