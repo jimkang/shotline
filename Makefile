@@ -1,27 +1,29 @@
-HOMEDIR = $(shell pwd)
-SMUSER = noderunner
-PRIVUSER = root
-SERVER = sprigot-droplet
-SSHCMD = ssh $(SMUSER)@$(SERVER)
-PRIVSSHCMD = ssh $(PRIVUSER)@$(SERVER)
 PROJECTNAME = shotline
-APPDIR = /var/www/$(PROJECTNAME)
+HOMEDIR = $(shell pwd)
+USER = bot
+PRIVUSER = root
+SERVER = smidgeo
+SSHCMD = ssh $(USER)@$(SERVER)
+PRIVSSHCMD = ssh $(PRIVUSER)@$(SERVER)
+APPDIR = /opt/$(PROJECTNAME)
 
 test:
 	node tests/integration/queue-shot-tests.js
 
 run-test-remote:
 	rm -rf test-image-output
-	$(SSHCMD) "cd $(APPDIR) && make test && \
+	$(SSHCMD) "cd $(APPDIR) && \
+	mkdir test-image-output && \
+	make test && \
 	tar zcvf test-image-output.tgz test-image-output"
-	scp $(SMUSER)@$(SERVER):$(APPDIR)/test-image-output.tgz .
+	scp $(USER)@$(SERVER):$(APPDIR)/test-image-output.tgz .
 	tar zxvf test-image-output.tgz
 
 pushall: update-remote
 	git push origin master
 
 sync:
-	rsync -a $(HOMEDIR) $(SMUSER)@$(SERVER):/var/www/ --exclude node_modules/ --exclude data/
+	rsync -a $(HOMEDIR) $(USER)@$(SERVER):/opt/ --exclude node_modules/ --exclude data/
 	$(SSHCMD) "cd $(APPDIR) && npm install"
 
 restart-remote:

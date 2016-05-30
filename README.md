@@ -6,35 +6,20 @@ A queued service for taking snapshots of web pages that will only allow n shots 
 Installation
 ------------
 
-Clone this repo.
-
-Then, create a `config/config.js` file in the project root that contains [Twitter API keys](https://gist.github.com/jimkang/34d16247b40097d8cace) and [Wordnik API key](http://developer.wordnik.com/). Example:
-
-    module.exports = {
-      twitter: {
-        consumer_key: 'asdfkljqwerjasdfalpsdfjas',
-        consumer_secret: 'asdfasdjfbkjqwhbefubvskjhfbgasdjfhgaksjdhfgaksdxvc',
-        access_token: '9999999999-zxcvkljhpoiuqwerkjhmnb,mnzxcvasdklfhwer',
-        access_token_secret: 'opoijkljsadfbzxcnvkmokwertlknfgmoskdfgossodrh'
-      },
-      wordnikAPIKey: 'mkomniojnnuibiybvuytvutrctrxezewarewetxyfcftvuhbg'
-    };
-
-You need to create /var/apps/shotline on your server.
+- Install [PhantomJS](http://phantomjs.org) globally on your server.
+- Clone this repo.
+- Edit the environment variables at the top of the Makefile to reflect your server.
+- Run `make sync`. During the `npm install` that this will trigger, there may be a failure when webshot attempts to use the global PhantomJS. That's OK. It'll stil be able to use it when it actually runs, in my experience.
 
 Usage
 -----
 
     make run
 
-Deploy:
-
-    SMUSER=yourserverusername make sync
-
 Tests
 -----
 
-Run tests with `make test`.
+Run tests locally with `make test`. Run tests on your server with `make run-test-remote`, then open your local test-image-output directory to visually verify that the screenshots are valid.
 
 License
 -------
