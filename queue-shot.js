@@ -61,31 +61,18 @@ function runWebshot(queueId, url, windowSize, done) {
   };
 
   var renderStream =  webshot(url, webshotOpts);
-  renderStream.on('data', saveToBase64Image);
-  renderStream.on('end', passImage);
-  renderStream.on('error', passError);
+  renderStream.on('end', adjustQueue);
 
-  function saveToBase64Image(data) {
-    base64Image += data.toString('base64');
-  }
+  done(null, renderStream);
 
-  function passImage() {
-    var result = {
-      base64Image: base64Image
-    };
-
+  function adjustQueue() {
     webshotsInProgress -= 1;
 
     console.log('Completed webshot for', queueId, url);
     console.log('webshotsInProgress', webshotsInProgress);
     console.log('webshotQueue size:', webshotQueue.length);
 
-    done(null, result);
     runNextWebshotInQueue();
-  }
-
-  function passError(error) {
-    done(error);
   }
 }
 

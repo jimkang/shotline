@@ -55,15 +55,29 @@ function testSimultaneous(t) {
     queueShot(
       getLinkFindingURLForImageConcept(testCase.imageConcept),
       testCase.imageConcept,
-      accountForReturn
+      checkFinding
     );
 
-    function accountForReturn(error, linkResult) {
-      t.ok(!error, 'No error while getting Link-finding image.');
-      if (error) {
-        console.log(error, error.stack);
+    function checkFinding(error, renderStream) {
+      t.ok(!error, 'No error while getting image stream.');
+
+      var base64Image = '';
+      renderStream.on('data', saveToBase64Image);
+      renderStream.on('end', checkImage);
+      renderStream.on('error', passError);
+
+      function saveToBase64Image(data) {
+        base64Image += data.toString('base64');
       }
-      validateResult(linkResult, t, testCase, 'simultaneous', count);
+
+      function checkImage() {
+        validateResult(base64Image, t, testCase, 'simultaneous', count);
+      }
+
+      function passError(error) {
+        console.log(error, error.stack);
+        t.ok(!error, 'No error from render stream.');
+      }
     }
   }
 
@@ -75,34 +89,14 @@ function testSimultaneous(t) {
   }
 }
 
-function runTest(testCase) {
-  test(testCase.name, testLinkFindingImage);
-
-  function testLinkFindingImage(t) {
-    queueShot(
-      getLinkFindingURLForImageConcept(testCase.imageConcept),
-      testCase.imageConcept,
-      checkFinding
-    );
-
-    function checkFinding(error, linkResult) {
-      t.ok(!error, 'No error while getting Link-finding image.');
-      if (error) {
-        console.log(error, error.stack);
-      }
-      validateResult(linkResult, t, testCase, 'test', t.end);
-    }
-  }
-}
-
-function validateResult(linkResult, t, testCase, prefix, done) {
-  t.ok(linkResult.base64Image.length > 0, 'Result has a base64Image string.');
+function validateResult(base64Image, t, testCase, prefix, done) {
+  t.ok(base64Image.length > 0, 'Result has a base64Image string.');
   var filename = 'test-image-output/' + prefix + '-' + testCase.name.replace(/[\s\:\/]/g, '-') +
     '-' + imageCounter + '.png';
   imageCounter += 1;
   console.log('Writing out', filename);
   console.log('You need to use your human eyes to visually inspect it.');
-  fs.writeFile(filename, linkResult.base64Image, 'base64', done);
+  fs.writeFile(filename, base64Image, 'base64', done);
 }
 
 function getLinkFindingURLForImageConcept(imageConceptResult) {
