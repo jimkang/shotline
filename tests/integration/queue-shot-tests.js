@@ -3,13 +3,19 @@ var queueShot = require('../../queue-shot');
 var fs = require('fs');
 
 var imageCounter = 0;
+var baseLinkRenderURL = 'http://jimkang.com/link-finding/#/thing/';
+var maxLinkWidth = 56;
+var linkHeight = 64;
+var linkMarginLeft = 32;
 
 var testCases = [
   {
     name: 'valid-image',
     imageConcept: {
       imgurl: 'http://assets.wholefoodsmarket.com/www/blogs/whole-story/post-images/strawberry_geometric.png',
-      concept: 'test'
+      concept: 'test',
+      width: 768,
+      height: 768
     },
     expected: {}
   },
@@ -17,7 +23,9 @@ var testCases = [
     name: 'animated-gif',
     imageConcept: {
       imgurl: 'https://67.media.tumblr.com/8df6cc88c7cdb1aab0ef8749e91b983a/tumblr_inline_o66spiQOEh1rjllea_540.gif',
-      concept: 'test'
+      concept: 'test',
+      width: 600,
+      height: 768
     },
     expected: {}
   },
@@ -25,7 +33,9 @@ var testCases = [
     name: 'Blank https://twitter.com/linkfinds/status/730341827883192320',
     imageConcept: {
       imgurl: 'http://vignette2.wikia.nocookie.net/p__/images/a/a6/Mort_Goldman.png/revision/latest?cb=20150524125305&path-prefix=protagonist',
-      concept: 'test'
+      concept: 'test',
+      width: 480,
+      height: 640
     }
   }
 ];
@@ -42,7 +52,11 @@ function testSimultaneous(t) {
   var numberOfResults = 0;
 
   function startGet(testCase) {
-    queueShot(testCase.imageConcept, accountForReturn);
+    queueShot(
+      getLinkFindingURLForImageConcept(testCase.imageConcept),
+      testCase.imageConcept,
+      accountForReturn
+    );
 
     function accountForReturn(error, linkResult) {
       t.ok(!error, 'No error while getting Link-finding image.');
@@ -65,7 +79,11 @@ function runTest(testCase) {
   test(testCase.name, testLinkFindingImage);
 
   function testLinkFindingImage(t) {
-    queueShot(testCase.imageConcept, checkFinding);
+    queueShot(
+      getLinkFindingURLForImageConcept(testCase.imageConcept),
+      testCase.imageConcept,
+      checkFinding
+    );
 
     function checkFinding(error, linkResult) {
       t.ok(!error, 'No error while getting Link-finding image.');
@@ -78,7 +96,6 @@ function runTest(testCase) {
 }
 
 function validateResult(linkResult, t, testCase, prefix, done) {
-  t.equal(linkResult.concept, testCase.imageConcept.concept, 'Result has a concept.');
   t.ok(linkResult.base64Image.length > 0, 'Result has a base64Image string.');
   var filename = 'test-image-output/' + prefix + '-' + testCase.name.replace(/[\s\:\/]/g, '-') +
     '-' + imageCounter + '.png';
@@ -86,4 +103,11 @@ function validateResult(linkResult, t, testCase, prefix, done) {
   console.log('Writing out', filename);
   console.log('You need to use your human eyes to visually inspect it.');
   fs.writeFile(filename, linkResult.base64Image, 'base64', done);
+}
+
+function getLinkFindingURLForImageConcept(imageConceptResult) {
+  var url = baseLinkRenderURL + encodeURIComponent(imageConceptResult.imgurl);
+  url += '/desc/' + imageConceptResult.concept;
+  url += '/width/' + imageConceptResult.width + '/height/' + imageConceptResult.height;
+  return url;
 }

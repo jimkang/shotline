@@ -1,21 +1,16 @@
 var webshot = require('webshot');
 var randomId = require('idmaker').randomId;
 
-var baseLinkRenderURL = 'http://jimkang.com/link-finding/#/thing/';
-// var baseLinkRenderURL = 'http://localhost:9966/#/thing/';
-var maxLinkWidth = 56;
-var linkHeight = 64;
-var linkMarginLeft = 32;
-
 var maxSimultaneousWebshots = 1;
 var webshotsInProgress = 0;
 
 var webshotQueue = [];
 
-function queueWebshot(imageConceptResult, callback) {
+function queueWebshot(url, windowSize, callback) {
   var queueItem = {
+    url: url,
+    windowSize, windowSize,
     id: randomId(4),
-    imageConceptResult: imageConceptResult,
     callback: callback
   };
   webshotQueue.push(queueItem);
@@ -28,7 +23,7 @@ function runNextWebshotInQueue() {
   else if (webshotsInProgress < maxSimultaneousWebshots) {
     console.log('Pulling webshot off of queue.');
     var queueItem = webshotQueue.shift();
-    runWebshot(queueItem.id, queueItem.imageConceptResult, queueItem.callback);
+    runWebshot(queueItem.id, queueItem.url, queueItem.windowSize, queueItem.callback);
   }
   else {
     console.log(
@@ -40,36 +35,23 @@ function runNextWebshotInQueue() {
   }
 }
 
-function queueShot(imageConceptResult, done) {
-  queueWebshot(imageConceptResult, done);
+function queueShot(url, windowSize, done) {
+  queueWebshot(url, windowSize, done);
   runNextWebshotInQueue();
 }
 
-function runWebshot(queueId, imageConceptResult, done) {
+function runWebshot(queueId, url, windowSize, done) {
   webshotsInProgress += 1;
-  console.log('running webshot for', queueId, imageConceptResult);
+  console.log('running webshot for', queueId, url);
   console.log('webshotsInProgress', webshotsInProgress);
 
-  var url = baseLinkRenderURL + encodeURIComponent(imageConceptResult.imgurl);
-  url += '/desc/' + imageConceptResult.concept;
-  url += '/width/' + imageConceptResult.width + '/height/' + imageConceptResult.height;
-  // console.log('url', url);
-
   var base64Image = '';
-  var width = imageConceptResult.width;
-  if (width < maxLinkWidth + linkMarginLeft) {
-    width = maxLinkWidth + linkMarginLeft;
-  }
-  var height = imageConceptResult.height + linkHeight;
 
   var webshotOpts = {
-    screenSize: {
-      width: width,
-      height: height
-    },
+    windowSize: windowSize,
     shotSize: {
-      width: width,
-      height: height
+      width: 'all',
+      height: 'all'
     },
     streamType: 'png',
     takeShotOnCallback: true,
@@ -80,22 +62,21 @@ function runWebshot(queueId, imageConceptResult, done) {
 
   var renderStream =  webshot(url, webshotOpts);
   renderStream.on('data', saveToBase64Image);
-  renderStream.on('end', passImageAndConcept);
+  renderStream.on('end', passImage);
   renderStream.on('error', passError);
 
   function saveToBase64Image(data) {
     base64Image += data.toString('base64');
   }
 
-  function passImageAndConcept() {
+  function passImage() {
     var result = {
-      base64Image: base64Image,
-      concept: imageConceptResult.concept
+      base64Image: base64Image
     };
 
     webshotsInProgress -= 1;
 
-    console.log('Completed webshot for', queueId, imageConceptResult);
+    console.log('Completed webshot for', queueId, url);
     console.log('webshotsInProgress', webshotsInProgress);
     console.log('webshotQueue size:', webshotQueue.length);
 
