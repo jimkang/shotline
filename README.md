@@ -1,4 +1,4 @@
-shotline
+web-photo-booth
 ==================
 
 A queued service for taking snapshots of web pages that will only allow n shots to be taken at a time so as to not overwhelm your tiny VPS or Pi or what not.

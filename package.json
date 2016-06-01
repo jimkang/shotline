@@ -1,5 +1,5 @@
 {
-  "name": "shotline",
+  "name": "web-photo-booth",
   "version": "1.0.0",
   "description": "A queued service for taking snapshots of web pages that will only allow n shots to be taken at a time so as to not overwhelm your tiny VPS or Pi or what not.",
   "main": "index.js",
@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:jimkang/shotline.git"
+    "url": "git@github.com:jimkang/web-photo-booth.git"
   },
   "keywords": [],
   "author": "Jim Kang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jimkang/shotline/issues"
+    "url": "https://github.com/jimkang/web-photo-booth/issues"
   },
-  "homepage": "https://github.com/jimkang/shotline",
+  "homepage": "https://github.com/jimkang/web-photo-booth",
   "devDependencies": {
     "tape": "^3.0.3"
   },

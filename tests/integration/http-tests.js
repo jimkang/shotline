@@ -1,5 +1,5 @@
 var test = require('tape');
-var server = require('../../shotline-server');
+var server = require('../../web-photo-booth-server');
 var request = require('request');
 var fs = require('fs');
 
@@ -54,7 +54,7 @@ function testSimultaneous(t) {
     port: 6660
   };
 
-  var serverBaseURL = 'http://localhost:' + serverOpts.port + '/shotline/shoot/';
+  var serverBaseURL = 'http://localhost:' + serverOpts.port + '/web-photo-booth/shoot/';
 
   server.start(serverOpts, startRequests);
 

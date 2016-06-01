@@ -1,5 +1,5 @@
 var test = require('tape');
-var shotline = require('../index');
+var web-photo-booth = require('../index');
 
 var testCases = [
   {

@@ -1,4 +1,4 @@
-PROJECTNAME = shotline
+PROJECTNAME = web-photo-booth
 HOMEDIR = $(shell pwd)
 USER = bot
 PRIVUSER = root
