@@ -30,11 +30,20 @@ Then, make GET requests to your server like:
 
     http://localhost:5678/shoot/http%3A%2F%2Fgoogle.com?width=600&height=600
 
+To get:
+
+![google](https://cloud.githubusercontent.com/assets/324298/15732486/97fa5814-284b-11e6-8e1e-ed0aece495b7.png)
+
 Or:
 
     http://localhost:5678/shoot/http%3A%2F%2Fwww.thisiscolossal.com%2F2014%2F07%2Felectric-objects-a-dedicated-computer-for-the-display-of-art%2F?width=320&height=568
 
-Or programmatically:
+To get:
+
+![thisiscolossal](https://cloud.githubusercontent.com/assets/324298/15732501/aeb262d6-284b-11e6-93ce-16b4b17a8011.png)
+
+
+You can also make the http request programmatically like so:
 
     var request = require('request');
     var fs = require('fs');
