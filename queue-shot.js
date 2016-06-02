@@ -45,8 +45,6 @@ function runWebshot(queueId, url, windowSize, done) {
   console.log('running webshot for', queueId, url);
   console.log('webshotsInProgress', webshotsInProgress);
 
-  var base64Image = '';
-
   var webshotOpts = {
     windowSize: windowSize,
     shotSize: {
@@ -54,13 +52,14 @@ function runWebshot(queueId, url, windowSize, done) {
       height: 'all'
     },
     streamType: 'png',
-    takeShotOnCallback: true,
+    // takeShotOnCallback: true,
     errorIfStatusIsNot200: true,
     errorIfJSException: true,
-    timeout: 10 * 1000
+    timeout: 20 * 1000
   };
 
-  var renderStream =  webshot(url, webshotOpts);
+  debugger;
+  var renderStream = webshot(url, webshotOpts);
   renderStream.on('end', adjustQueue);
 
   done(null, renderStream);

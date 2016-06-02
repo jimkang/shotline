@@ -1,5 +1,5 @@
 var test = require('tape');
-var server = require('../../web-photo-booth-server');
+var WebPhotoBoothServer = require('../../web-photo-booth-server');
 var request = require('request');
 var fs = require('fs');
 
@@ -50,13 +50,11 @@ function testSimultaneous(t) {
   var multiplier = 3;
   var numberOfResults = 0;
 
-  var serverOpts = {
-    port: 6660
-  };
+  var port = 6660;
+  var serverBaseURL = 'http://localhost:' + port + '/shoot/';
 
-  var serverBaseURL = 'http://localhost:' + serverOpts.port + '/web-photo-booth/shoot/';
-
-  server.start(serverOpts, startRequests);
+  var server = WebPhotoBoothServer({});
+  server.listen(port, startRequests);
 
   function startRequests(error) {
     t.ok(!error, 'No error while starting server.');
@@ -79,11 +77,11 @@ function testSimultaneous(t) {
       method: 'GET',
       url: url
     };
-    var reqStream = request(reqOpts, accountForReturn);
+    var reqStream = request(reqOpts);
     reqStream.on('error', checkError);
     reqStream.on('end', count);
 
-    var filename = 'test-image-output/' + prefix + '-' + testCase.name.replace(/[\s\:\/]/g, '-') +
+    var filename = 'test-image-output/http' + '-' + testCase.name.replace(/[\s\:\/]/g, '-') +
       '-' + imageCounter + '.png';
     imageCounter += 1;
     console.log('Starting write of', filename);
@@ -101,8 +99,7 @@ function testSimultaneous(t) {
   function count() {
     numberOfResults += 1;
     if (numberOfResults === testCases.length * multiplier) {
-      server.stop();
-      t.end();
+      server.close(t.end);
     }
   }
 }

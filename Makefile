@@ -9,6 +9,7 @@ APPDIR = /opt/$(PROJECTNAME)
 
 test:
 	node tests/integration/queue-shot-tests.js
+	node tests/integration/http-tests.js
 
 run-test-remote:
 	rm -rf test-image-output
@@ -18,6 +19,9 @@ run-test-remote:
 	tar zcvf test-image-output.tgz test-image-output"
 	scp $(USER)@$(SERVER):$(APPDIR)/test-image-output.tgz .
 	tar zxvf test-image-output.tgz
+
+try-server:
+	node tools/start-server.js
 
 pushall: update-remote
 	git push origin master
