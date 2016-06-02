@@ -11,8 +11,8 @@ Installation
 Usage
 -----
 
-    var WebPhotoBoothServer = require('web-photo-booth-server');
-    var server = WebPhotoBoothServer({
+    var WebPhotoBooth = require('web-photo-booth');
+    var server = WebPhotoBooth({
         maxSimultaneousWebshots: 2
     });
     server.listen(5678, startRequests);
