@@ -12,7 +12,9 @@ Usage
 -----
 
     var WebPhotoBoothServer = require('web-photo-booth-server');
-    var server = WebPhotoBoothServer();
+    var server = WebPhotoBoothServer({
+        maxSimultaneousWebshots: 2
+    });
     server.listen(5678, startRequests);
 
     function reportReady(error) {

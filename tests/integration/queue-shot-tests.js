@@ -1,5 +1,5 @@
 var test = require('tape');
-var queueShot = require('../../queue-shot');
+var QueueShot = require('../../queue-shot');
 var fs = require('fs');
 
 var imageCounter = 0;
@@ -44,12 +44,14 @@ console.log('You need to watch processes to make sure there\'s no more than maxS
 test('Simultaneous request test', testSimultaneous);
 
 function testSimultaneous(t) {
+  var numberOfResults = 0;
+  var queueShot = QueueShot();
+
   var multiplier = 3;
   for (var i = 0; i < multiplier; ++i) {
     testCases.forEach(startGet);
   }
   
-  var numberOfResults = 0;
 
   function startGet(testCase) {
     queueShot(

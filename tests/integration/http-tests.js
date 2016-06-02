@@ -53,7 +53,9 @@ function testSimultaneous(t) {
   var port = 6660;
   var serverBaseURL = 'http://localhost:' + port + '/shoot/';
 
-  var server = WebPhotoBoothServer({});
+  var server = WebPhotoBoothServer({
+    maxSimultaneousWebshots: 2
+  });
   server.listen(port, startRequests);
 
   function startRequests(error) {
