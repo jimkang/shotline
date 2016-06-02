@@ -6,20 +6,58 @@ A queued service for taking snapshots of web pages that will only allow n shots 
 Installation
 ------------
 
-- Install [PhantomJS](http://phantomjs.org) globally on your server.
-- Clone this repo.
-- Edit the environment variables at the top of the Makefile to reflect your server.
-- Run `make sync`. During the `npm install` that this will trigger, there may be a failure when webshot attempts to use the global PhantomJS. That's OK. It'll stil be able to use it when it actually runs, in my experience.
+    npm install web-photo-booth --save
 
 Usage
 -----
 
-    make run
+    var WebPhotoBoothServer = require('web-photo-booth-server');
+    var server = WebPhotoBoothServer();
+    server.listen(5678, startRequests);
+
+    function reportReady(error) {
+      if (error) {
+        console.log(error);
+      }
+      else {
+        console.log('%s listening at %s', server.name, server.url);
+      }
+    }
+
+Then, make GET requests to your server like:
+
+    http://localhost:5678/shoot/http%3A%2F%2Fgoogle.com?width=600&height=600
+
+Or:
+
+    http://localhost:5678/shoot/http%3A%2F%2Fwww.thisiscolossal.com%2F2014%2F07%2Felectric-objects-a-dedicated-computer-for-the-display-of-art%2F?width=320&height=568
+
+Or programmatically:
+
+    var request = require('request');
+    var fs = require('fs');
+
+    var url = 'http://localhost:5678/shoot/';
+    url += encodeURIComponent(targetURL);
+    url += '?width=1600'
+    url += '&height=3200';
+
+    var reqOpts = {
+      method: 'GET',
+      url: url
+    };
+    var reqStream = request(reqOpts);
+    reqStream.on('error', reportError);
+
+    // Stream the http response to a file.
+    var filename = 'shot.png';
+    console.log('Starting write of', filename);
+    reqStream.pipe(fs.createWriteStream(filename));
 
 Tests
 -----
 
-Run tests locally with `make test`. Run tests on your server with `make run-test-remote`, then open your local test-image-output directory to visually verify that the screenshots are valid.
+Run tests locally with `make test`. The tests will report errors that can be detected programmatically, but you also need to open the `test-image-output` directory and visually inspect all of the images saved by the tests to make sure they are valid.
 
 License
 -------
