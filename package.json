@@ -1,6 +1,6 @@
 {
   "name": "web-photo-booth",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "A queued service for taking snapshots of web pages that will only allow n shots to be taken at a time so as to not overwhelm your tiny VPS or Pi or what not.",
   "main": "web-photo-booth-server.js",
   "scripts": {
