@@ -6,6 +6,8 @@ A queued service for taking snapshots of web pages that will only allow n shots 
 Installation
 ------------
 
+First, install [PhantomJS](http://phantomjs.org/download.html) such that it is in the PATH that the Node process will us. Then:
+
     npm install web-photo-booth --save
 
 Usage

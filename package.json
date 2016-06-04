@@ -23,12 +23,13 @@
   },
   "homepage": "https://github.com/jimkang/web-photo-booth",
   "devDependencies": {
+    "request": "^2.72.0",
     "tape": "^3.0.3"
   },
   "dependencies": {
     "idmaker": "^0.1.1",
     "lodash.defaults": "^4.0.1",
     "restify": "^4.1.0",
-    "webshot": "^0.18.0"
+    "webshot": "jimkang/node-webshot"
   }
 }
