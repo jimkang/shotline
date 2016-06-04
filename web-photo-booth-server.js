@@ -29,12 +29,16 @@ function WebPhotoBoothServer(opts) {
       return;
     }
 
-    var windowSize = {
-      width: req.query.width ? req.query.width : 1024,
-      height: req.query.height ? req.query.height : 768
+    const queueShotOpts = {
+      url: req.params.targetURL,
+      windowSize: {
+        width: req.query.width ? req.query.width : 1024,
+        height: req.query.height ? req.query.height : 768
+      },
+      takeShotOnCallback: req.query.takeShotOnCallback === 'true'
     };
 
-    queueShot(req.params.targetURL, windowSize, renderResult);
+    queueShot(queueShotOpts, renderResult);
 
     function renderResult(error, renderStream) {
       if (error) {

@@ -21,7 +21,8 @@ var testCases = [
       concept: 'test',
       width: 768,
       height: 768
-    }
+    },
+    takeShotOnCallback: true
   },
   {
     name: 'animated-gif',
@@ -74,6 +75,10 @@ function testSimultaneous(t) {
     url += encodeURIComponent(getLinkFindingURLForImageConcept(testCase.imageConcept));
     url += '?width' + testCase.imageConcept.width;
     url += '&height' + testCase.imageConcept.height;
+
+    if (testCase.takeShotOnCallback) {
+      url += '&takeShotOnCallback=true';
+    }
 
     var reqOpts = {
       method: 'GET',

@@ -1,13 +1,12 @@
 var webshot = require('webshot');
 var randomId = require('idmaker').randomId;
+var defaults = require('lodash.defaults');
 
-function QueueShot(opts) {
+function QueueShot(createOpts) {
   var maxSimultaneousWebshots;
-  var takeShotOnCallback;
 
-  if (opts) {
-    maxSimultaneousWebshots = opts.maxSimultaneousWebshots;
-    takeShotOnCallback = opts.takeShotOnCallback;
+  if (createOpts) {
+    maxSimultaneousWebshots = createOpts.maxSimultaneousWebshots;
   }
 
   if (!maxSimultaneousWebshots) {
@@ -17,13 +16,10 @@ function QueueShot(opts) {
   var webshotsInProgress = 0;
   var webshotQueue = [];
 
-  function queueWebshot(url, windowSize, callback) {
-    var queueItem = {
-      url: url,
-      windowSize, windowSize,
-      id: randomId(4),
-      callback: callback
-    };
+  function queueWebshot(opts, callback) {
+    var queueItem = defaults({}, opts);
+    queueItem.id = randomId(4);
+    queueItem.callback = callback;
     webshotQueue.push(queueItem);
   }
 
@@ -34,7 +30,7 @@ function QueueShot(opts) {
     else if (webshotsInProgress < maxSimultaneousWebshots) {
       console.log('Pulling webshot off of queue.');
       var queueItem = webshotQueue.shift();
-      runWebshot(queueItem.id, queueItem.url, queueItem.windowSize, queueItem.callback);
+      runWebshot(queueItem, queueItem.callback);
     }
     else {
       console.log(
@@ -46,30 +42,30 @@ function QueueShot(opts) {
     }
   }
 
-  function queueShot(url, windowSize, done) {
-    queueWebshot(url, windowSize, done);
+  function queueShot(opts, done) {
+    queueWebshot(opts, done);
     runNextWebshotInQueue();
   }
 
-  function runWebshot(queueId, url, windowSize, done) {
+  function runWebshot(opts, done) {
     webshotsInProgress += 1;
-    console.log('running webshot for', queueId, url);
+    console.log('running webshot for', opts.id, opts.url);
     console.log('webshotsInProgress', webshotsInProgress);
 
     var webshotOpts = {
-      windowSize: windowSize,
+      windowSize: opts.windowSize,
       shotSize: {
         width: 'all',
         height: 'all'
       },
       streamType: 'png',
-      takeShotOnCallback: takeShotOnCallback,
+      takeShotOnCallback: opts.takeShotOnCallback,
       errorIfStatusIsNot200: true,
       errorIfJSException: true,
       timeout: 20 * 1000
     };
 
-    var renderStream = webshot(url, webshotOpts);
+    var renderStream = webshot(opts.url, webshotOpts);
     renderStream.on('end', adjustQueue);
 
     done(null, renderStream);
@@ -77,7 +73,7 @@ function QueueShot(opts) {
     function adjustQueue() {
       webshotsInProgress -= 1;
 
-      console.log('Completed webshot for', queueId, url);
+      console.log('Completed webshot for', opts.id, opts.url);
       console.log('webshotsInProgress', webshotsInProgress);
       console.log('webshotQueue size:', webshotQueue.length);
 

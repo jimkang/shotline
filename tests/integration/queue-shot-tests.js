@@ -55,8 +55,10 @@ function testSimultaneous(t) {
 
   function startGet(testCase) {
     queueShot(
-      getLinkFindingURLForImageConcept(testCase.imageConcept),
-      testCase.imageConcept,
+      {
+        url: getLinkFindingURLForImageConcept(testCase.imageConcept),
+        windowSize: testCase.imageConcept
+      },
       checkFinding
     );
 
