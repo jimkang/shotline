@@ -45,10 +45,15 @@ function WebPhotoBoothServer(opts) {
         next(error);
       }
       else {
-        renderStream.on('error', next);
+        renderStream.on('error', logError);
         renderStream.on('end', next);
         renderStream.pipe(res);
       }
+    }
+
+    function logError(error) {
+      console.error(error, error.stack);
+      next(error);
     }
   }
 
