@@ -3,9 +3,11 @@ var randomId = require('idmaker').randomId;
 
 function QueueShot(opts) {
   var maxSimultaneousWebshots;
+  var takeShotOnCallback;
 
   if (opts) {
     maxSimultaneousWebshots = opts.maxSimultaneousWebshots;
+    takeShotOnCallback = opts.takeShotOnCallback;
   }
 
   if (!maxSimultaneousWebshots) {
@@ -61,13 +63,12 @@ function QueueShot(opts) {
         height: 'all'
       },
       streamType: 'png',
-      // takeShotOnCallback: true,
+      takeShotOnCallback: takeShotOnCallback,
       errorIfStatusIsNot200: true,
       errorIfJSException: true,
       timeout: 20 * 1000
     };
 
-    debugger;
     var renderStream = webshot(url, webshotOpts);
     renderStream.on('end', adjustQueue);
 
